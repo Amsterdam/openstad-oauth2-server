@@ -48,23 +48,34 @@ services:
     networks:
       - database
     depends_on:
-      - "mysql"
+      mysql:
+        condition: service_healthy
+    volumes:
+      - certs:/home/app/certs
+      - certs4:/home/app/certs4
 
   mysql:
     image: "mysql:5"
+    platform: linux/amd64
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD:-openstad}"
       MYSQL_DATABASE: "${DB_NAME:-openstad}"
       MYSQL_USER: "${DB_USER:-openstad}"
       MYSQL_PASSWORD: "${DB_PASSWORD:-openstad}"
     expose:
-      - "3306:"
+      - "3306"
       - "33060"
+    ports:
+      - "3306:3306"
     restart: unless-stopped
     volumes:
       - database:/var/lib/mysql
     networks:
       - database
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 20
 
 #
 # Volumes section
@@ -73,6 +84,8 @@ services:
 #
 volumes:
   database:
+  certs:
+  certs4:
 
 #
 # Networks section
