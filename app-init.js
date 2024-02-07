@@ -19,7 +19,6 @@ const jsonFilter                  = require('./nunjucks/json');
 const timestampFilter             = require('./nunjucks/timestamp');
 const replaceIdeaVariablesFilter  = require('./nunjucks/replaceIdeaVariables');
 const flash                       = require('express-flash');
-const expressValidator            = require('express-validator');
 const MongoStore                 = require('connect-mongo')(expressSession);
 
 //const MemoryStore = expressSession.MemoryStore;
@@ -114,7 +113,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(expressValidator());
 
 app.use((req, res, next) => {
   console.log('=====> REQUEST: ', req.originalUrl);
@@ -131,25 +129,5 @@ require('./auth');
 // static resources for stylesheets, images, javascript files
 
 require('./routes/routes')(app);
-
-// /**
-//  * From time to time we need to clean up any expired tokens
-//  * in the database
-//  */
-// setInterval(() => {
-//     db
-//     .accessTokens
-//     .removeExpired()
-//     .catch(err => console.error('Error trying to remove expired tokens:', err.stack));
-// }, config.db.timeToCheckExpiredTokens * 1000);
-//
-// // Set the ip-address of your trusted reverse proxy server such as
-// // haproxy or Apache mod proxy or nginx configured as proxy or others.
-// // The proxy server should insert the ip address of the remote client
-// // through request header 'X-Forwarded-For' as
-// // 'X-Forwarded-For: some.client.ip.address'
-// // Insertion of the forward header is an option on most proxy software
-//
-// app.set('trust proxy', '127.0.0.1');
 
 module.exports = app;
