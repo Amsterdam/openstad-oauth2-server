@@ -57,6 +57,8 @@ function getMongoDbConnectionString () {
 
 const url = getMongoDbConnectionString();
 
+console.log("Mongo connections string:", url)
+
 const sessionStore =  new MongoStore({
     url: url,
     ttl: 700 * 24 * 60 * 60 // = 700 days. Default
