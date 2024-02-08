@@ -14,8 +14,10 @@ if (process.env.MYSQL_CA_CERT) {
 }
 
 if (process.env.AZURE_CLIENT_ID) {
-	dialectOptions.ssl = {
-		require: true
+	dialectOptions = {
+    ssl: {
+      require: true
+    }
 	}
 }
 

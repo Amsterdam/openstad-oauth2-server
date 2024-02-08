@@ -14,7 +14,7 @@
 version: '3'
 services:
   web:
-    image: ${REGISTRY:-localhost:5001}/${REPOSITORY:-opdrachten/openstad-auth}:${VERSION:-latest}
+    image: ${REGISTRY:-127.0.0.1:5001}/${REPOSITORY:-opdrachten/openstad-auth}:${VERSION:-latest}
     build:
       context: .
     environment:
