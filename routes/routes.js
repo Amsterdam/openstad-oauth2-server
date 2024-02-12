@@ -29,49 +29,13 @@ const blocker = require('../middleware/blocker');
 const getClientIdFromRequest = require('../utils/getClientIdFromRequest');
 
 //MODELS
-const ExternalCsrfToken = require('../models').ExternalCsrfToken;
+const db = require('../db');
 
-const loginBruteForce = bruteForce.user.getMiddleware({
-    key: function (req, res, next) {
-        // prevent too many attempts for the same email
-        next(req.body.email);
-    }
-});
-
-const uniqueCodeBruteForce = bruteForce.user.getMiddleware({
-    key: function (req, res, next) {
-        // prevent too many attempts for the same unique_code
-        next('unique_code');
-    }
-});
-
-const phonenumberBruteForce = bruteForce.userVeryRestricted.getMiddleware({
-    key: function (req, res, next) {
-        // prevent too many attempts for the same phonenumber
-        next('phonenumber');
-    }
-});
-
-const smsCodeBruteForce = bruteForce.user.getMiddleware({
-    key: function (req, res, next) {
-        // prevent too many attempts for the same phonenumber
-        next('phonenumber');
-    }
-});
-
-// prevent too many attempts for the same email per clientId (if applicable)
-const emailUrlBruteForce = bruteForce.userVeryRestricted.getMiddleware({
-    key: function (req, res, next) {
-        const clientId = getClientIdFromRequest(req);
-        
-        if (clientId) {
-            return next(`${clientId}-${req.body.email}`);
-        }
-        
-        return next(`${req.body.email}`);
-    }
-});
-
+const loginBruteForce = bruteForce.user;
+const uniqueCodeBruteForce = bruteForce.user;
+const phonenumberBruteForce = bruteForce.userVeryRestricted;
+const smsCodeBruteForce = bruteForce.user;
+const emailUrlBruteForce = bruteForce.userVeryRestricted;
 
 const csurf = require('csurf');
 
@@ -88,59 +52,54 @@ const csurf = require('csurf');
  * don't allow for redirect back to an unauthorized domain, but in case that fails this is a backup
  */
 const csrfProtection = async  (req, res, next) => {
-    if (req.body && req.body.externalCSRF) {
-        let csrfToken;
 
-        try {
-            csrfToken = await new ExternalCsrfToken({
-                token: req.body.externalCSRF
-            }).query((q) => {
-                /**
-                 * Only select tokens that are younger then 10 minutes
-                 */
-                const minutes = 10;
-                const date = new Date();
-                const timeAgo = new Date(date.setTime(date.getTime() - (minutes * 60000)));
+  if (req.body && req.body.externalCSRF) {
 
-                q.where('createdAt', '>=', timeAgo);
-                q.orderBy('createdAt', 'DESC');
-            })
-                .fetch()
+    let csrfToken;
 
-        } catch (e) {
-            next(e)
-        }
+    try {
+      /**
+       * Only select tokens that are younger then 10 minutes
+       */
+      const minutes = 10;
+      const date = new Date();
+      const timeAgo = new Date(date.setTime(date.getTime() - (minutes * 60000)));
 
-
-
-        // in case a valid csrf token is found set to used it and move on.
-        if (csrfToken) {
-            csrfToken.set('used', true);
-
-            try {
-                await csrfToken.save();
-            } catch (e) {
-                next(e)
-            }
-
-            next();
-        } else {
-            next(new Error('Invalid CSRF token', 403));
-        }
-
-    } else {
-        return csurf({
-            cookie: {
-                httpOnly: true,
-                secure: process.env.COOKIE_SECURE_OFF === 'yes' ? false : true,
-                sameSite: process.env.CSRF_SAME_SITE_OFF === 'yes' ? false : true
-            }
-        })(req, res, next);
+      csrfToken = await db.ExternalCsrfToken.findOne({
+        where: {
+          token: req.body.externalCSRF,
+          createdAt: {
+            [db.Sequelize.Op.gte]: timeAgo,
+          },
+        },
+        order: [['createdAt', 'DESC']],
+      });
+    } catch (e) {
+      return next(e)
     }
+
+    // in case a valid csrf token is found set to used it and move on.
+    if (csrfToken) {
+      try {
+        await csrfToken.update({ 'used': true });
+      } catch (e) {
+        return next(e)
+      }
+      return next();
+    } else {
+      return next(new Error('Invalid CSRF token', 403));
+    }
+
+  } else {
+    return csurf({
+      cookie: {
+        httpOnly: true,
+        secure: process.env.COOKIE_SECURE_OFF === 'yes' ? false : true,
+        sameSite: process.env.CSRF_SAME_SITE_OFF === 'yes' ? false : true
+      }
+    })(req, res, next);
+  }
 }
-
-
-
 
 const addCsrfGlobal = (req, res, next) => {
     req.nunjucksEnv.addGlobal('csrfToken', req.csrfToken());
@@ -207,7 +166,7 @@ module.exports = function (app) {
     /**
      * Shared middleware for all auth routes, adding client and bruteforce
      */
-    app.use('/auth', [clientMw.withOne, bruteForce.global.prevent]);
+    app.use('/auth', [clientMw.withOne, bruteForce.global]);
 
     /**
      * Login & register with local login
@@ -308,13 +267,13 @@ module.exports = function (app) {
     app.get('/auth/two-factor/configure', clientMw.withOne, csrfProtection, addCsrfGlobal, clientMw.checkIfEmailRequired, authTwoFactor.configure);
     app.post('/auth/two-factor/configure', clientMw.withOne, csrfProtection, addCsrfGlobal, authTwoFactor.configurePost);
 
-    app.use('/dialog', [bruteForce.global.prevent]);
+    app.use('/dialog', [bruteForce.global]);
 
     app.get('/dialog/authorize', clientMw.withOne, authMw.check, userMw.withRoleForClient, clientMw.checkRequiredUserFields, clientMw.check2FA, clientMw.checkPhonenumberAuth(), clientMw.checkUniqueCodeAuth((req, res) => {
         return res.redirect('/login?clientId=' + req.query.client_id);
     }), oauth2Controller.authorization);
 
-    app.post('/dialog/authorize/decision', clientMw.withOne, userMw.withRoleForClient, clientMw.checkPhonenumberAuth(), clientMw.checkUniqueCodeAuth(),clientMw.check2FA, bruteForce.global.prevent, oauth2Controller.decision);
+    app.post('/dialog/authorize/decision', clientMw.withOne, userMw.withRoleForClient, clientMw.checkPhonenumberAuth(), clientMw.checkUniqueCodeAuth(),clientMw.check2FA, bruteForce.global, oauth2Controller.decision);
     app.post('/oauth/token', oauth2Controller.token);
     app.get('/oauth/token', oauth2Controller.token);
 

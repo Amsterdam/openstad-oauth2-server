@@ -5,8 +5,7 @@ const bcrypt            = require('bcrypt');
 const saltRounds        = 10;
 const hat               = require('hat');
 const login             = require('connect-ensure-login');
-const User              = require('../../models').User;
-const UserRole          = require('../../models').UserRole;
+const db                = require('../../db');
 const tokenUrl          = require('../../services/tokenUrl');
 const emailService      = require('../../services/email');
 const authCodeConfig    = require('../../config/auth').get(authType);
@@ -44,31 +43,31 @@ exports.postLogin = (req, res, next) => {
       if (err) { return next(err); }
 
       const redirectToAuthorize = () => {
-        req.brute.reset(() => {
-          const redirectUrl = req.query.redirect_uri ? req.query.redirect_uri : req.client.redirectUrl;
-          // Redirect if it succeeds to authorize screen
-          const authorizeUrl = `/dialog/authorize?redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
-          return res.redirect(authorizeUrl);
-        });
+        req.brute.resetKey(req.bruteKey);
+        const redirectUrl = req.query.redirect_uri ? req.query.redirect_uri : req.client.redirectUrl;
+        // Redirect if it succeeds to authorize screen
+        const authorizeUrl = `/dialog/authorize?redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+        return res.redirect(authorizeUrl);
       }
 
-      new UserRole({
-          clientId: req.client.id,
-          userId: user.id
+      db.UserRole
+        .findOne({
+          where: {
+            clientId: req.client.id,
+            userId: user.id
+          }
         })
-        .fetch()
         .then((userRole) => {
           if (userRole) {
             redirectToAuthorize();
           } else {
             const defaultRoleId  = req.client.config.defaultRoleId ? req.client.config.defaultRoleId : authCodeConfig.defaultRoleId;
-
-            new UserRole({
-              clientId: req.client.id,
-              roleId: defaultRoleId,
-              userId: user.id
-            })
-              .save()
+            db.UserRole
+              .create({
+                clientId: req.client.id,
+                roleId: defaultRoleId,
+                userId: user.id
+              })
               .then(() => {
                 redirectToAuthorize();
               })

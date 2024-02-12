@@ -25,8 +25,7 @@ generate-cert:
 	$(run) web node generate-cert
 
 init-db:
-	$(run) web knex migrate:latest --env production
-	$(run) web knex seed:run --env production
+	$(run) web node reset
 
 init: generate-cert init-db
 

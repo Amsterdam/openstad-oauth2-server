@@ -1,5 +1,5 @@
-const login     = require('connect-ensure-login');
-const User      = require('../../models').User;
+const login = require('connect-ensure-login');
+const db = require('../../db');
 
 
 /**
@@ -25,23 +25,23 @@ exports.info = (req, res) => {
   // and used in access control checks.  For illustrative purposes, this
   // example simply returns the scope in the response.
 
-  let extraData;
-  try {
-    extraData = JSON.parse(req.user.extraData)
-  } catch(err) {}
-
+  // todo: ik denk dat hier de default role moet komen
   res.json({
     user_id: req.user.id,
-    email: req.user.email,
     role: req.user.role,
     firstName: req.user.firstName,
-    postcode: req.user.postcode,
     lastName: req.user.lastName,
-    // todo: ik denk dat hier de default role moet komen
+    email: req.user.email,
     phoneNumber: req.user.phoneNumber,
     hashedPhoneNumber: req.user.hashedPhoneNumber,
-    extraData,
-    scope: req.authInfo.scope
+    phoneNumberConfirmed: req.user.phoneNumberConfirmed,
+    extraData: req.user.extraData,
+    streetName: req.user.streetName,
+    houseNumber: req.user.houseNumber,
+    suffix: req.user.suffix,
+    postcode: req.user.postcode,
+    city: req.user.city,
+    scope: req.authInfo.scope,
   });
 }
 
@@ -66,18 +66,19 @@ exports.info = (req, res) => {
    (req, res) => {
      const keysToUpdate = ['firstName', 'lastName', 'street_name', 'house_number', 'suffix', 'postcode', 'city', 'phone']
 
-     new User({ id: req.user.id })
-       .fetch()
+     db.User()
+       .findOne({ where: { id: req.user.id } })
        .then((user) => {
+         let data = {};
          keysToUpdate.forEach((key) => {
            if (req.body[key]) {
-             user.set(key, req.body[key]);
+             data[key] = req.body[key];
            }
          });
 
          // Save user and redirect back
          user
-           .save()
+           .update(data)
            .then(() => {
              req.flash('success', { msg: 'Opgeslagen' });
              res.redirect('/account?clientId=' + req.client.clientId);
@@ -87,21 +88,19 @@ exports.info = (req, res) => {
    }
  ];
 
- exports.postPassword = (req, res, next) => {
-   new User({id: req.user.id})
-     .fetch()
-     .then((user) => {
-       user.set('password', bcrypt.hashSync(req.body.password, saltRounds));
-
-       user
-         .save()
-         .then(() => {
-           req.flash('success', { msg: 'Wachtwoord aangepast, je kan nu inloggen!' });
-      //     res.redirect(authLocalConfig.loginUrl + '?clientId=');
-           res.redirect('/account?clientId=' + req.client.clientId);
-         })
-         .catch((err) => {
-           next(err);
-         })
-     });
- };
+exports.postPassword = (req, res, next) => {
+  db.User()
+    .findOne({ where: { id: req.user.id } })
+    .then((user) => {
+      user
+        .update({ password: bcrypt.hashSync(req.body.password, saltRounds) })
+        .then(() => {
+          req.flash('success', { msg: 'Wachtwoord aangepast, je kan nu inloggen!' });
+          //     res.redirect(authLocalConfig.loginUrl + '?clientId=');
+          res.redirect('/account?clientId=' + req.client.clientId);
+        })
+        .catch((err) => {
+          next(err);
+        })
+    });
+};

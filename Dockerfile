@@ -52,10 +52,6 @@ RUN npm install bcrypt --legacy-peer-deps
 # Install all npm packages
 RUN npm install --legacy-peer-deps
 
-# ----------------------------------------------
-RUN npm install knex -g
-# ----------------------------------------------
-
 RUN npm install -g nodemon
 
 
