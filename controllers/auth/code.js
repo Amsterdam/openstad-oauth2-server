@@ -31,15 +31,17 @@ exports.login = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   passport.authenticate('uniqueCode', { session: false }, function(err, user, info) {
-
+    console.log("==> user in postLogin:", user)
     // Redirect if it fails to the original auth screen
     if (!user) {
+      console.log("==> Geen user gevonden")
       req.flash('error', {msg: authCodeConfig.errorMessage});
       const redirectUrl = req.query.redirect_uri ? req.query.redirect_uri : req.client.redirectUrl;
       return res.redirect(`${authCodeConfig.loginUrl}?redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code&client_id=${req.client.clientId}&scope=offline`);
     }
 
     req.logIn(user, function(err) {
+      console.log("==> Is er een error? ", err)
       if (err) { return next(err); }
 
       const redirectToAuthorize = () => {
@@ -58,6 +60,7 @@ exports.postLogin = (req, res, next) => {
           }
         })
         .then((userRole) => {
+          console.log("==> Even checken of we hier komen, eventueel met een userRole:", userRole)
           if (userRole) {
             redirectToAuthorize();
           } else {

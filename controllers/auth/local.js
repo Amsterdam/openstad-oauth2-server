@@ -122,14 +122,19 @@ exports.postLogin = (req, res, next) => {
 exports.logout = async (req, res) => {
  // req.logout();
 
+  console.log("controler/auth/local bereikt, de tweede middleware")
+
   await req.session.destroy();
 
   const config = req.client.config;
   const allowedDomains = req.client.allowedDomains ? req.client.allowedDomains : false;
   let redirectURL = req.query.redirectUrl;
   try {
+    console.log("redirectURL = ", redirectURL)
     const redirectUrlHost = redirectURL ? new URL(redirectURL).hostname : false;
+    console.log("redirectUrlHost = ", redirectUrlHost)
     redirectURL           = redirectUrlHost && allowedDomains && allowedDomains.indexOf(redirectUrlHost) !== -1 ? redirectURL : false;
+    console.log("redirectURL nieuw = ", redirectURL)
   } catch (e) {
     redirectURL = null;
   }
@@ -137,6 +142,7 @@ exports.logout = async (req, res) => {
   if (!redirectURL) {
     redirectURL =  config && config.logoutUrl ? config.logoutUrl : req.client.siteUrl
   }
+  console.log("ALs er geen redirectUrl was, dan nu wel als het goed is:", redirectURL)
 
   res.redirect(redirectURL);
 };
