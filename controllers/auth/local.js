@@ -133,6 +133,9 @@ exports.logout = async (req, res) => {
     console.log("redirectURL = ", redirectURL)
     const redirectUrlHost = redirectURL ? new URL(redirectURL).hostname : false;
     console.log("redirectUrlHost = ", redirectUrlHost)
+    console.log('==> redirectUrlHost:', redirectUrlHost)
+    console.log('==> allowedDomains:', allowedDomains)
+    console.log('==> allowedDomains.indexOf(redirectUrlHost):', allowedDomains.indexOf(redirectUrlHost))
     redirectURL           = redirectUrlHost && allowedDomains && allowedDomains.indexOf(redirectUrlHost) !== -1 ? redirectURL : false;
     console.log("redirectURL nieuw = ", redirectURL)
   } catch (e) {
