@@ -19,8 +19,13 @@ exports.validateLogin = async(req, res, next) => {
 exports.check = (req, res, next) => {
   console.log("==> Running auth middleware 'check'")
   if (!req.isAuthenticated || !req.isAuthenticated()) {
-    console.log("==> Mw auth 'check': request is niet authenticated")
+    console.log("==> Mxw auth 'check': request is niet authenticated")
     let url = '/login?clientId=' + req.client.clientId;
+
+    // Set complete URL including domain for Amsterdam Azure implementation - 31415
+    url = process.env.APP_URL + '/' + url
+
+    console.log(`==> Dus de nieuwe URL met domein is dan: ${url}`)
 
     if (req.query.redirect_uri) {
       url =  url + '&redirect_uri=' + encodeURIComponent(req.query.redirect_uri);
