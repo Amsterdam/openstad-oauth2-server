@@ -68,7 +68,7 @@ exports.withOne = async (req, res, next) => {
         res.locals.displayClientName = true;
       }
       
-      console.log(`==> Mw client withOne gaat next() aanroepen met de volgende res.locals: ${res.locals}`)
+      console.log(`==> Mw client withOne gaat next() aanroepen`)
       return next();
 
     } else {
