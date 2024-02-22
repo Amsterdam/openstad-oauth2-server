@@ -4,7 +4,7 @@
   <title>{{ client.name }}</title>
   <!-- Needed for mobile sites to work -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="/css/main.css?v=1.1">
+  <link rel="stylesheet" type="text/css" href="{{appUrl}}/css/main.css?v=1.1">
 
   {% if envStyleSheets %}
   {% for sheet in envStyleSheets %}
@@ -27,10 +27,10 @@
   {% endif %}
 
 
-  <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
-  <script type="text/javascript" src="/javascripts/jquery.validate.min.js"></script>
-  <script type="text/javascript" src="/javascripts/jquery.validate.nl.js"></script>
-  <script type="text/javascript" src="/javascripts/main.js?v=1.1"></script>
+  <script type="text/javascript" src="{{appUrl}}/javascripts/jquery.min.js"></script>
+  <script type="text/javascript" src="{{appUrl}}/javascripts/jquery.validate.min.js"></script>
+  <script type="text/javascript" src="{{appUrl}}/javascripts/jquery.validate.nl.js"></script>
+  <script type="text/javascript" src="{{appUrl}}/javascripts/main.js?v=1.1"></script>
 </head>
 <body>
   {% include 'elements/header.html' %}

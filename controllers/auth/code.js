@@ -25,7 +25,8 @@ exports.login = (req, res, next) => {
     buttonText: configAuthType.buttonText ? configAuthType.buttonText : authCodeConfig.buttonText,
     displaySidebar: configAuthType.displaySidebar ? configAuthType.displaySidebar : authCodeConfig.displaySidebar,
     backUrl: authCodeConfig.displayBackbutton ? backUrl : false,
-    redirect_uri: encodeURIComponent(req.query.redirect_uri)
+    redirect_uri: encodeURIComponent(req.query.redirect_uri),
+    appUrl: process.env.APP_URL
   });
 }
 
