@@ -2,15 +2,35 @@ const memberRoleId  = process.env.MEMBER_ROLE_ID ? process.env.MEMBER_ROLE_ID : 
 const anonymousRoleId = process.env.ANONYMOUS_ROLE_ID ? process.env.ANONYMOUS_ROLE_ID : 3;
 
 const formatLoginUrl = (slug) => {
-  return `/auth/${slug}/login`;
+  let url = `/auth/${slug}/login`
+
+  // Set complete URL including domain for Amsterdam Azure implementation - 31415
+  url = process.env.APP_URL + '/' + url
+
+  console.log(`==> Dus de nieuwe URL met domein van formatLoginUrl is dan: ${url}`)
+  return url;
 }
 
 const formatRegisterUrl = (slug) => {
-  return `/auth/${slug}/register`;
+  let url = `/auth/${slug}/register`;
+
+  // Set complete URL including domain for Amsterdam Azure implementation - 31415
+  url = process.env.APP_URL + '/' + url
+
+  console.log(`==> Dus de nieuwe URL met domein van formatRegisterUrl is dan: ${url}`)
+
+  return url;
 }
 
 const formatSMSCodeUrl = (slug) => {
-  return `/auth/${slug}/sms-code`;
+  let url = `/auth/${slug}/sms-code`;
+
+  // Set complete URL including domain for Amsterdam Azure implementation - 31415
+  url = process.env.APP_URL + '/' + url
+
+  console.log(`==> Dus de nieuwe URL met domein van formatSMSCodeUrl is dan: ${url}`)
+
+  return url;
 }
 
 const types = [

@@ -10,6 +10,7 @@ const configAuthTypes = require('../../config/auth.js').types;
   * If one available auth type is available, redirect otherwise let the user choose
   */
  exports.index = (req, res, next) => {
+    console.log(`==> Starting controller auth.choose`)
    let isPriviligedRoute = false;
    let availableAuthTypes;
    if (req.params.priviligedRoute) {
@@ -24,13 +25,15 @@ const configAuthTypes = require('../../config/auth.js').types;
    }
 
    if (availableAuthTypes.length === 1) {
+    console.log(`==> Er is maar één available auth type, namelijk: ${availableAuthTypes[0]}`)
      let availableAuthType = availableAuthTypes.shift();
      let url = availableAuthType.loginUrl + '?clientId=' + req.client.clientId;
      
      if (req.query.redirect_uri) {
        url =  url + '&redirect_uri=' + encodeURIComponent(req.query.redirect_uri);
-     }
-
+      }
+      
+      console.log(`==> Controller auth.choose gaat redirecten naar: ${url}`)
      res.redirect(url);
    } else {
      res.render('auth/choose', {
