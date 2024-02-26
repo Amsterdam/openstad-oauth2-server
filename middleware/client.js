@@ -305,7 +305,7 @@ exports.checkRequiredUserFields = (req, res, next) => {
   // if error redirect to register
   if (error) {
     console.log(`Mw client 'checkRequiredUserFields', error gevonden dus redirect naar: /auth/required-fields?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`)
-    res.redirect(`/auth/required-fields?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
+    res.redirect(`${process.env.APP_URL}/auth/required-fields?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
   } else {
     console.log(`Mw client 'checkRequiredUserFields', geen requiredField errors gevonden, roept next() aan`)
     next();
