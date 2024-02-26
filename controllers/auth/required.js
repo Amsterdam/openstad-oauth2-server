@@ -31,7 +31,8 @@ exports.index = (req, res, next) => {
     description: configRequiredFields.description,
     title: configRequiredFields.title,
     buttonText: configRequiredFields.buttonText,
-    redirect_uri: encodeURIComponent(req.query.redirect_uri)
+    redirect_uri: encodeURIComponent(req.query.redirect_uri),
+    appUrl: process.env.APP_URL
   });
 }
 
