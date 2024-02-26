@@ -65,8 +65,11 @@ exports.register  = (req, res, next) => {
 						ip: ip
 					}
 
-					const authorizeUrl = `/dialog/authorize?redirect_uri=${encodeURIComponent(req.query.redirect_uri)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+					let authorizeUrl = `/dialog/authorize?redirect_uri=${encodeURIComponent(req.query.redirect_uri)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
 
+					// Set complete URL including domain for Amsterdam Azure implementation - 31415
+					authorizeUrl = process.env.APP_URL + authorizeUrl
+					
 					try {
 						db.ActionLog
 							.create(values)

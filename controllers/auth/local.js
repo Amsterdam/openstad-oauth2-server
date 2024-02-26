@@ -102,7 +102,10 @@ exports.postLogin = (req, res, next) => {
     req.logIn(user, function(err) {
       if (err) { return next(err); }
       const redirectUrl = req.query.redirect_uri ? encodeURIComponent(req.query.redirect_uri) : req.client.redirectUrl;
-      const authorizeUrl = `/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+      let authorizeUrl = `/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+
+      // Set complete URL including domain for Amsterdam Azure implementation - 31415
+			authorizeUrl = process.env.APP_URL + authorizeUrl
 
   //    const redirectTo = req.session.returnTo ? req.session.returnTo : req.client.redirectUrl;
 

@@ -49,7 +49,9 @@ exports.postLogin = (req, res, next) => {
         req.brute.resetKey(req.bruteKey);
         const redirectUrl = req.query.redirect_uri ? req.query.redirect_uri : req.client.redirectUrl;
         // Redirect if it succeeds to authorize screen
-        const authorizeUrl = `/dialog/authorize?redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+        let authorizeUrl = `/dialog/authorize?redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+        // Set complete URL including domain for Amsterdam Azure implementation - 31415
+				authorizeUrl = process.env.APP_URL + authorizeUrl
         return res.redirect(authorizeUrl);
       }
 
