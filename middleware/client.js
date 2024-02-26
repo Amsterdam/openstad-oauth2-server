@@ -245,8 +245,12 @@ exports.check2FA = (req, res, next) => {
   console.log("==> Running client middleware 'check2FA'")
   const twoFactorRoles =  req.client.twoFactorRoles;
 
+  console.log("==> twoFactorToles: ", twoFactorRoles)
+
   // if no role is present, assume default role
   const userRole = req.user.role ? req.user.role : defaultRole;
+
+  console.log("==> userRole: ", userRole)
 
   /**
    * In case no 2factor roles are defined all is good and check is passed
