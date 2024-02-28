@@ -323,14 +323,18 @@ exports.create =  (req, res, next) => {
   const clientSecret = rack();
 
   const values = { name, description, exposedUserFields, requiredUserFields, siteUrl, redirectUrl, authTypes, clientId, clientSecret, allowedDomains, config, twoFactorRoles};
-
+  console.log("==> Auth server gaat proberen een nieuwe client aan te maken in de database, met de volgende values: ", values)
   db.Client
     .create(values)
     .then((client) => {
+      console.log("==> Gelukt! Nieuwe client is aangemaakt")
       req.client = client;
       next();
     })
-    .catch((err) => { next(err); });
+    .catch((err) => {
+      console.log("==> Helaas! Niet gelukt, vanwege de volgende error: ", err)
+      next(err);
+    });
 }
 
 exports.update = (req, res, next) => {
