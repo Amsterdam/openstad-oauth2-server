@@ -86,11 +86,11 @@ const handleSending = async (req, res, next) => {
 
         req.flash('success', {msg: 'De e-mail is verstuurd naar: ' + req.user.email});
 
-        res.redirect('/auth/url/confirmation?clientId=' + req.client.clientId + '&redirect_uri=' + req.redirectUrl || '/login?clientId=' + req.client.clientId + '&redirect_uri=' + req.redirectUrl);
+        res.redirect(process.env.APP_URL + '/auth/url/confirmation?clientId=' + req.client.clientId + '&redirect_uri=' + req.redirectUrl || '/login?clientId=' + req.client.clientId + '&redirect_uri=' + req.redirectUrl);
     } catch (err) {
         console.log('e-mail error', err);
         req.flash('error', {msg: 'Het is niet gelukt om de e-mail te versturen!'});
-        res.redirect('/auth/url/login?clientId=' + req.client.clientId + '&redirect_uri=' + req.redirectUrl);
+        res.redirect(process.env.APP_URL + '/auth/url/login?clientId=' + req.client.clientId + '&redirect_uri=' + req.redirectUrl);
     }
 }
 
@@ -180,7 +180,7 @@ exports.postAuthenticate = (req, res, next) => {
         // Redirect if it fails to the original e-mail screen
         if (!user) {
             req.flash('error', {msg: 'De url is geen geldige login url, wellicht is deze verlopen'});
-            return res.redirect(`/auth/url/login?clientId=${req.client.clientId}&redirect_uri=${redirectUrl}`);
+            return res.redirect(`${process.env.APP_URL}/auth/url/login?clientId=${req.client.clientId}&redirect_uri=${redirectUrl}`);
         }
 
         req.logIn(user, function (err) {

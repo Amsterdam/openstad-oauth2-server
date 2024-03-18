@@ -4,7 +4,7 @@ const failCallback = function (req, res, next, options) {
   req.flash('error', { msg: options.message });
   const clientConfig = req.client.config ? req.client.config : {};
   const redirectUrl = clientConfig && clientConfig.emailRedirectUrl ? clientConfig.emailRedirectUrl : encodeURIComponent(req.query.redirect_uri);
-  res.redirect('/login?clientId=' + req.client.clientId + '&redirect_uri=' + redirectUrl); // brute force protection triggered, send them back to the login page
+  res.redirect(process.env.APP_URL + '/login?clientId=' + req.client.clientId + '&redirect_uri=' + redirectUrl); // brute force protection triggered, send them back to the login page
 };
 
 //CONFIGURE BRUTE FORCE PROTECT

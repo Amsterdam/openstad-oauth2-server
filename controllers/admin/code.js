@@ -111,7 +111,7 @@ exports.postBulk = (req, res, next) => {
        req.flash('success', {msg: `All codes succesfully created!` });
      }
 
-     res.redirect(req.header('Referer') || '/admin/code/bulk');
+     res.redirect(req.header('Referer') || `${process.env.APP_URL}/admin/code/bulk`);
    }
 
    /**
@@ -141,7 +141,7 @@ exports.create = (req, res, next) => {
     .create({ code, clientId })
     .then((response) => {
       req.flash('success', { msg: 'Succesfully created '});
-      res.redirect('/admin/codes' || '/');
+      res.redirect(`${process.env.APP_URL}/admin/codes` || process.env.APP_URL);
     })
     .catch((err) => { next(err); });
 }
@@ -149,5 +149,5 @@ exports.create = (req, res, next) => {
 exports.destroy = (req, res) => {
   req.body.code.destroy();
   req.flash('success', { msg: 'Succesfully removed'});
-  res.redirect('/admin/codes');
+  res.redirect(process.env.APP_URL + '/admin/codes');
 }

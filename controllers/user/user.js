@@ -81,7 +81,7 @@ exports.info = (req, res) => {
            .update(data)
            .then(() => {
              req.flash('success', { msg: 'Opgeslagen' });
-             res.redirect('/account?clientId=' + req.client.clientId);
+             res.redirect(process.env.APP_URL + '/account?clientId=' + req.client.clientId);
            })
            .catch((err) => { next(err); })
        });
@@ -97,7 +97,7 @@ exports.postPassword = (req, res, next) => {
         .then(() => {
           req.flash('success', { msg: 'Wachtwoord aangepast, je kan nu inloggen!' });
           //     res.redirect(authLocalConfig.loginUrl + '?clientId=');
-          res.redirect('/account?clientId=' + req.client.clientId);
+          res.redirect(process.env.APP_URL + '/account?clientId=' + req.client.clientId);
         })
         .catch((err) => {
           next(err);

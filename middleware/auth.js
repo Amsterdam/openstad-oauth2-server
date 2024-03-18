@@ -10,7 +10,7 @@ exports.validateLogin = async(req, res, next) => {
 
   if (result.errors && result.errors.length) {
     req.flash('error', result.errors);
-    res.redirect(req.header('Referer') || '/account');
+    res.redirect(req.header('Referer') || `${process.env.APP_URL}/account`);
   } else {
     next();
   }
@@ -58,6 +58,6 @@ exports.passwordValidate = (req, res, next) => {
     next();
   } else {
     req.flash('error', {msg: 'Wachtwoord moet min 8 karakters lang zijn'});
-    res.redirect(req.header('Referer') || '/account');
+    res.redirect(req.header('Referer') || `${process.env.APP_URL}/account`);
   }
 }

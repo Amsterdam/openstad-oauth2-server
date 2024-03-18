@@ -1,6 +1,6 @@
 const twofactor = require("node-2fa");
 
-const twoFactorBaseUrl = '/auth/two-factor';
+const twoFactorBaseUrl = `${process.env.APP_URL}/auth/two-factor`;
 
 function isEncoded(uri) {
     uri = uri || '';
@@ -67,7 +67,7 @@ exports.post = async (req, res, next) => {
     } else {
         console.log('Two factor validation failed');
         req.flash('error', {msg: 'Two factor validatie is niet gelukt, probeer het nogmaals.'});
-        res.redirect(req.header('Referer') || formatRedirectUrl(`/login`, req));
+        res.redirect(req.header('Referer') || formatRedirectUrl(`${process.env.APP_URL}/login`, req));
     }
 }
 

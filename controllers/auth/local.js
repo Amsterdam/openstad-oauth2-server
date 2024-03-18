@@ -23,9 +23,9 @@
   */
  exports.index = (req, res) => {
    if (req.user) {
-     res.redirect('/account');
+     res.redirect(process.env.APP_URL + '/account');
    } else {
-     res.redirect('/login');
+     res.redirect(process.env.APP_URL + '/login');
    }
  };
 
@@ -80,7 +80,7 @@ exports.postRegister = (req, res, next) => {
       .catch((err) => { next(err) });
   } else {
     req.flash('error', { errors });
-    res.redirect('/register');
+    res.redirect(process.env.APP_URL + '/register');
   }
 }
 

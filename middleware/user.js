@@ -140,7 +140,7 @@ exports.validateUser = async(req, res, next) => {
 
   if (result.errors && result.errors.length) {
     req.flash('error', result.errors);
-    res.redirect(req.header('Referer') || '/account');
+    res.redirect(req.header('Referer') || `${process.env.APP_URL}/account`);
   } else {
     next();
   }
@@ -273,7 +273,7 @@ exports.validateUniqueEmail  = (req, res, next) => {
         req.flash('error', {
           msg: 'E-mail al in gebruik!'
         });
-        res.redirect(req.header('Referer') || '/account');
+        res.redirect(req.header('Referer') || `${process.env.APP_URL}/account`);
       } else {
         next();
       }
@@ -289,7 +289,7 @@ exports.validatePassword = (req, res, next) => {
     next();
   } else {
     req.flash('error', {msg: 'Incorrect wachtwoord'});
-    res.redirect(req.header('Referer') || '/account');
+    res.redirect(req.header('Referer') || `${process.env.APP_URL}/account`);
   }
 }
 
@@ -301,7 +301,7 @@ exports.validateEmail = (req, res, next) => {
     next();
   } else {
     req.flash('error', {msg: 'Incorrect email'});
-    res.redirect(req.header('Referer') || '/account');
+    res.redirect(req.header('Referer') || `${process.env.APP_URL}/account`);
   }
 }
 

@@ -27,7 +27,7 @@ exports.create = (req, res, next) => {
     .create({ name })
     .then((response) => {
       req.flash('success', { msg: 'Succesfully created '});
-      res.redirect('/admin/roles' || '/');
+      res.redirect(`${process.env.APP_URL}/admin/roles` || process.env.APP_URL);
     })
     .catch((err) => { next(err); });
 }
@@ -39,7 +39,7 @@ exports.update = (req, res, next) => {
     .update({name})
     .then((response) => {
       req.flash('success', { msg: 'Updated role!'});
-      res.redirect('/admin/role/' + response.get('id')  || '/');
+      res.redirect(`${process.env.APP_URL}/admin/role/` + response.get('id')  || process.env.APP_URL);
     })
     .catch((err) => { next(err); })
 }

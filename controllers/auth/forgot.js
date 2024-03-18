@@ -92,7 +92,7 @@ exports.postForgot = (req, res, next) => {
         .then((user) => {
             if (!user) {
                 req.flash('error', {msg: 'Het is niet gelukt om de e-mail te versturen!'});
-                res.redirect('/auth/local/forgot' + '?clientId=' + req.client.clientId + `&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
+                res.redirect(`${process.env.APP_URL}/auth/local/forgot` + '?clientId=' + req.client.clientId + `&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
             }
 
             req.user = user;
@@ -107,12 +107,12 @@ exports.postForgot = (req, res, next) => {
         })
         .then(() => {
             req.flash('success', {msg: 'We hebben een e-mail naar je verstuurd'});
-            res.redirect('/auth/local/forgot?clientId=' + req.client.clientId + `&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
+            res.redirect(`${process.env.APP_URL}/auth/local/forgot?clientId=` + req.client.clientId + `&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
         })
         .catch((err) => {
             console.log('ererer', err)
             req.flash('error', {msg: 'E-mail adres is niet bekend bij ons.'});
-            res.redirect('/auth/local/forgot?clientId=' + req.client.clientId + `&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
+            res.redirect(`${process.env.APP_URL}/auth/local/forgot?clientId=` + req.client.clientId + `&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
         });
 
     /**

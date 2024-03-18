@@ -23,9 +23,9 @@ const URL               = require('url').URL;
 
 exports.index = (req, res) => {
   if (req.user) {
-    res.redirect('/account');
+    res.redirect(process.env.APP_URL + '/account');
   } else {
-    res.redirect('/login');
+    res.redirect(process.env.APP_URL + '/login');
   }
 };
 
