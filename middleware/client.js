@@ -276,7 +276,7 @@ exports.check2FA = (req, res, next) => {
     return next();
   } else if (twoFactorRoles && twoFactorRoles.includes(userRole) && !req.session.twoFactorValid) {
     console.log(`Mw client 'check2FA', de user moet 2FA gebruiken, en dit is nog niet gedaan. De gebruiker gaat dus geredirect worden naar: /auth/two-factor?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`)
-    return res.redirect(`/auth/two-factor?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
+    return res.redirect(`${process.env.APP_URL}/auth/two-factor?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
   }
 
 
