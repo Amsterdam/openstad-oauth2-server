@@ -206,7 +206,7 @@ module.exports = function (app) {
         const queryIndex = req.originalUrl.indexOf('?');
         const queryString = (queryIndex>=0) ? req.originalUrl.slice(queryIndex) : '';
 
-        res.redirect('/login/admin' + queryString);
+        res.redirect(process.env.APP_URL + '/login/admin' + queryString);
     });
 
     /**
@@ -279,7 +279,7 @@ module.exports = function (app) {
       clientMw.checkPhonenumberAuth(),
       clientMw.checkUniqueCodeAuth((req, res) => {
         console.log(`==> checkUniqueCodeAuth, gaat nu geredirect worden naar: /login?clientId=${req.query.client_id}`)  
-        return res.redirect('/login?clientId=' + req.query.client_id);
+        return res.redirect(process.env.APP_URL + '/login?clientId=' + req.query.client_id);
       }),
       oauth2Controller.authorization
     );
@@ -319,7 +319,7 @@ module.exports = function (app) {
           if (req.query.redirect_uri) querystring += `&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`;
           if (req.query.token) querystring += `&token=${req.query.token}`;
           if (req.query.access_token) querystring += `&access_token=${req.query.access_token}`;
-          return res.redirect('/logout'+querystring);
+          return res.redirect(process.env.APP_URL + '/logout'+querystring);
         }
         res.status(500).render('errors/500');
     });
