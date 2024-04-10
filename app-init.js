@@ -52,7 +52,7 @@ function getMongoDbConnectionString () {
   
   const useAuth = user && password;
   
-  return `mongodb://${useAuth ? `${user}:${password}@` : ''}${host}:${port}/sessions${authSource ? `?authSource=${authSource}` : ''}`;
+  return `mongodb://${useAuth ? `${user}:${password}@` : ''}${host}:${port}/sessions${authSource ? `?authSource=${authSource}&directConnection=true` : ''}`;
 }
 
 const url = getMongoDbConnectionString();
