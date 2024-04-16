@@ -51,6 +51,7 @@ exports.login = (req, res) => {
     helpText: configAuthType.helpText ? configAuthType.helpText : authLocalConfig.helpText,
     buttonText: configAuthType.buttonText ? configAuthType.buttonText : authLocalConfig.buttonText,
     forgotPasswordText: configAuthType.forgotPasswordText ? configAuthType.forgotPasswordText : authLocalConfig.forgotPasswordText,
+    appUrl: process.env.APP_URL
   });
 };
 
@@ -62,7 +63,8 @@ exports.login = (req, res) => {
  */
 exports.register = (req, res) => {
   res.render('auth/local/register', {
-    clientId: req.client.clientId
+    clientId: req.client.clientId,
+    appUrl: process.env.APP_URL
   });
 };
 

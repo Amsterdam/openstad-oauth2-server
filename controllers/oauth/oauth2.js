@@ -209,13 +209,13 @@ exports.authorization = [
             callback(null, { allow: true });
           })(req, res, next);
         } else {
-          res.render('dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
+          res.render('dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client, appUrl: process.env.APP_URL });
         }
       })
       .catch((error) => {
         console.log('error', error);
 
-        res.render('dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
+        res.render('dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client, appUrl: process.env.APP_URL });
       });
   },
 ];

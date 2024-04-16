@@ -34,6 +34,7 @@ exports.login = [setNoCachHeadersMw, (req, res) => {
         label: configAuthType && configAuthType.label ? configAuthType.label : false,
         helpText: configAuthType && configAuthType.helpText ? configAuthType.helpText : false,
         buttonText: configAuthType && configAuthType.buttonText ? configAuthType.buttonText : false,
+        appUrl: process.env.APP_URL
     });
 }];
 
@@ -48,6 +49,7 @@ exports.confirmation = (req, res) => {
         redirectUrl: encodeURIComponent(req.query.redirect_uri),
         title: configAuthType && configAuthType.confirmedTitle ? configAuthType.confirmedTitle : false,
         description: configAuthType && configAuthType.confirmedDescription ? configAuthType.confirmedDescription : false,
+        appUrl: process.env.APP_URL
     });
 };
 
@@ -62,6 +64,7 @@ exports.authenticate = (req, res) => {
         loaderTitle: configAuthType.loaderTitle,
         loaderDescription: configAuthType.loaderDescription,
         loaderImage: configAuthType.loaderImage,
+        appUrl: process.env.APP_URL
     });
 };
 
@@ -70,7 +73,8 @@ exports.register = (req, res, next) => {
         token: req.query.token,
         user: req.user,
         client: req.client,
-        clientId: req.client.clientId
+        clientId: req.client.clientId,
+        appUrl: process.env.APP_URL
     });
 }
 

@@ -58,6 +58,7 @@ exports.info = (req, res) => {
        user: req.user,
        client: req.client,
        displayLogout: true,
+       appUrl: process.env.APP_URL
      });
    }
  ];

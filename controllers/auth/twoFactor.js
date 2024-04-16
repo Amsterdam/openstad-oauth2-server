@@ -34,7 +34,8 @@ exports.index = (req, res, next) => {
         description: configTwoFactor.description,
         title: configTwoFactor.title,
         buttonText: configTwoFactor.buttonText,
-        redirectUrl: encodeURIComponent(req.query.redirect_uri)
+        redirectUrl: encodeURIComponent(req.query.redirect_uri),
+        appUrl: process.env.APP_URL
     });
 }
 
@@ -121,7 +122,8 @@ exports.configure = async (req, res, next) => {
             description: configTwoFactor.description,
             title: configTwoFactor.title,
             buttonText: configTwoFactor.buttonText,
-            redirectUrl: encodeURIComponent(req.query.redirect_uri)
+            redirectUrl: encodeURIComponent(req.query.redirect_uri),
+            appUrl: process.env.APP_URL
         });
     }
  }

@@ -29,6 +29,7 @@ exports.forgot = (req, res) => {
         clientId: req.client.clientId,
         client: req.client,
         redirectUrl: encodeURIComponent(req.query.redirect_uri),
+        appUrl: process.env.APP_URL
     });
 };
 
@@ -48,6 +49,7 @@ exports.reset = (req, res) => {
         clientId: req.client.clientId,
         client: req.client,
         redirectUrl: encodeURIComponent(req.query.redirect_uri),
+        appUrl: process.env.APP_URL
     });
 };
 

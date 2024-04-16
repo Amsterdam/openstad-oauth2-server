@@ -50,6 +50,7 @@ exports.login = (req, res) => {
     label: configAuthType.loginLabel || configAuthType.label || authPhonenumberConfig.loginLabel || authPhonenumberConfig.label,
     helpText: configAuthType.loginHelpText || configAuthType.helpText || authPhonenumberConfig.loginHelpText || authPhonenumberConfig.helpText,
     buttonText: configAuthType.loginButtonText || configAuthType.buttonText || authPhonenumberConfig.loginButtonText || authPhonenumberConfig.buttonText,
+    appUrl: process.env.APP_URL
   });
 };
 
@@ -143,6 +144,7 @@ exports.smsCode = (req, res) => {
     label: configAuthType.smsCodeLabel || configAuthType.label || authPhonenumberConfig.smsCodeLabel || authPhonenumberConfig.label,
     helpText: configAuthType.smsCodeHelpText || configAuthType.helpText || authPhonenumberConfig.smsCodeHelpText || authPhonenumberConfig.helpText,
     buttonText: configAuthType.smsCodeButtonText || configAuthType.buttonText || authPhonenumberConfig.smsCodeButtonText || authPhonenumberConfig.buttonText,
+    appUrl: process.env.APP_URL
   });
 };
 

@@ -21,14 +21,16 @@ exports.edit = (req, res) => {
     user: req.userObject,
     roles: req.roles,
     clients: userClients,
-    userRoles: userRoles
+    userRoles: userRoles,
+    appUrl: process.env.APP_URL
   });
 }
 
 exports.new = (req, res) => {
   res.render('admin/user/new',  {
     roles: req.roles,
-    clients: req.clients
+    clients: req.clients,
+    appUrl: process.env.APP_URL
   });
 }
 

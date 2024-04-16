@@ -3,17 +3,21 @@ const db = require('../../db');
 
 exports.all = (req, res, next) => {
   res.render('admin/role/all', {
-    roles: req.roles
+    roles: req.roles,
+    appUrl: process.env.APP_URL
   });
 }
 
 exports.new = (req, res, next) => {
-  res.render('admin/role/new');
+  res.render('admin/role/new', {
+    appUrl: process.env.APP_URL
+  });
 }
 
 exports.edit = (req, res, next) => {
   res.render('admin/role/edit', {
-    role: req.role
+    role: req.role,
+    appUrl: process.env.APP_URL
   });
 }
 

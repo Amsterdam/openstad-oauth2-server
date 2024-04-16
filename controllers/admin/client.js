@@ -12,7 +12,8 @@ const authTypes = require('../../config/auth').types;
  */
 exports.all = (req, res, next) => {
   res.render('admin/client/all', {
-    clients: req.clients
+    clients: req.clients,
+    appUrl: process.env.APP_URL
   });
 }
 
@@ -28,6 +29,7 @@ exports.new = (req, res, next) => {
     requiredUserFields: userFields,
     exposedUserFields: userFields,
     authTypes: authTypes,
+    appUrl: process.env.APP_URL
   });
 }
 
@@ -46,7 +48,8 @@ exports.edit = (req, res, next) => {
     clientExposedUserFields: clientExposedUserFields,
     clientRequiredUserFields: clientRequiredUserFields,
     roles: req.roles,
-    clients: req.clients
+    clients: req.clients,
+    appUrl: process.env.APP_URL
   });
 }
 

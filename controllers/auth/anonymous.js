@@ -106,5 +106,6 @@ exports.info  = (req, res, next) => {
     loginUrl: authAnonymousConfig.loginUrl,
     clientId: req.client.clientId,
     client: req.client,
+	appUrl: process.env.APP_URL
   });
 }

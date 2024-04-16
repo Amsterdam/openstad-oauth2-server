@@ -41,7 +41,8 @@ const configAuthTypes = require('../../config/auth.js').types;
         isPriviligedRoute: isPriviligedRoute,
         clientId: req.client.clientId,
         client: req.client,
-        redirect_uri: encodeURIComponent(req.query.redirect_uri)
+        redirect_uri: encodeURIComponent(req.query.redirect_uri),
+        appUrl: process.env.APP_URL
      })
    }
  };

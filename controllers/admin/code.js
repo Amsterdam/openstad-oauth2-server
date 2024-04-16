@@ -5,19 +5,22 @@ const csv           = require('fast-csv');
 
 exports.all = (req, res, next) => {
   res.render('admin/code/all', {
-    codes: req.codes
+    codes: req.codes,
+    appUrl: process.env.APP_URL
   });
 }
 
 exports.new = (req, res, next) => {
   res.render('admin/code/new', {
-    clients: req.clients
+    clients: req.clients,
+    appUrl: process.env.APP_URL
   });
 }
 
 exports.bulk = (req, res, next) => {
   res.render('admin/code/bulk', {
-    clients: req.clients
+    clients: req.clients,
+    appUrl: process.env.APP_URL
   });
 }
 
