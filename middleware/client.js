@@ -40,7 +40,7 @@ exports.withOne = async (req, res, next) => {
   try {
     
     let client = await db.Client.scope(scope).findOne({ where });
-    console.log(`==> Mw client withOne found a client from the database, with the following config: ${client.config}`)
+    // console.log(`==> Mw client withOne found a client from the database, with the following config: ${client.config}`)
     if (client) {
       req.client = client;
       const clientConfig = req.client.config;
