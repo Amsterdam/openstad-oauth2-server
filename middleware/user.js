@@ -65,19 +65,17 @@ exports.withOne = (req, res, next) => {
 }
 
 exports.withRoleForClient = (req, res, next) => {
-  console.log(`==> Running user middleware 'withRoleForClient'. Gaat de rol zoeken in de db voor userId ${req.user.id} en clientId ${req.client.id}`)
+
   db.UserRole
     .findOne({ where: { userId: req.user.id, clientId: req.client.id } })
     .then((userRole) => {
-       console.log(`==> Mw user 'withRoleForClient' gaat verder met userRole: ${userRole}`)
+
        if (userRole) {
          const roleId = userRole.roleId;
          
-         console.log(`==> Mw user 'withRoleForClient' gaat role zoeken met roleId: ${roleId}`)
          db.Role
            .findOne({ where: {id: roleId} })
            .then((role) => {
-              console.log(`==> Mw user 'withRoleForClient' gaat verder met role: ${role}`)
              if (role) {
                req.user.role = role.name;
              }

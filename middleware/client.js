@@ -17,7 +17,7 @@ exports.withAll = (req, res, next) => {
 }
 
 exports.withOne = async (req, res, next) => {
-  console.log("==> Running client middleware 'withOne'")
+
   let clientId = getClientIdFromRequest(req);
   if (!clientId) { // TODO: why is this not part of getClientIdFromRequest
     clientId = req.query.client_id;
@@ -26,7 +26,6 @@ exports.withOne = async (req, res, next) => {
   if (!clientId) { // TODO: why is this not part of getClientIdFromRequest
     clientId = req.params.clientId;
   }
-  console.log("==> Mw client withOne got clientId: ", clientId)
  
   if (!clientId) return next('No Client ID is set for login');
 
@@ -40,7 +39,7 @@ exports.withOne = async (req, res, next) => {
   try {
     
     let client = await db.Client.scope(scope).findOne({ where });
-    // console.log(`==> Mw client withOne found a client from the database, with the following config: ${client.config}`)
+
     if (client) {
       req.client = client;
       const clientConfig = req.client.config;
@@ -68,7 +67,6 @@ exports.withOne = async (req, res, next) => {
         res.locals.displayClientName = true;
       }
       
-      console.log(`==> Mw client withOne gaat next() aanroepen`)
       return next();
 
     } else {
@@ -162,23 +160,18 @@ exports.checkIfAccessTokenBelongToCurrentClient =  async (req, res, next) => {
 
 
 exports.checkUniqueCodeAuth = (errorCallback) => {
-  console.log("==> Running client middleware 'checkUniqueCodeAuth'")
   //validate code auth type
   return (req, res, next) => {
     const authTypes = req.client.authTypes;
 
       // if UniqueCode authentication is used, other methods are blocked to enforce users can never authorize with email
       if (authTypes.indexOf('UniqueCode') !== -1) {
-        console.log(`Mw client 'checkUniqueCodeAuth, unieke code is een van de auth types. Gaat nu een unieke code in db zoeken met clientId ${req.client.id} en userId ${req.user.id}`)
         db.UniqueCode
         .findOne({ where: { clientId: req.client.id, userId: req.user.id } })
         .then((codeResponse) => {
-          console.log(`Mw client 'checkUniqueCodeAuth, codeResponse is: ${codeResponse}`)
           const userHasPrivilegedRole = privilegedRoles.indexOf(req.user.role) > -1;
-          console.log(`Mw client 'checkUniqueCodeAuth, userHasPrivilegedRole: ${userHasPrivilegedRole}`)
           // if uniquecode exists or user has priviliged role
           if (codeResponse || userHasPrivilegedRole) {
-            console.log(`Mw client 'checkUniqueCodeAuth, er is een codeResponse en de userHasPrivilegedRole, dus next() gaat aangeroepen worden.`)
             next();
           } else {
             throw new Error('Not validated with Unique Code');
@@ -199,7 +192,6 @@ exports.checkUniqueCodeAuth = (errorCallback) => {
         });
 
       } else {
-        console.log(`Mw client 'checkUniqueCodeAuth, unieke code is niet een van de auth types, dus next() gaat aangeroepen worden.`)
         next();
       }
     }
@@ -208,7 +200,6 @@ exports.checkUniqueCodeAuth = (errorCallback) => {
 
 
 exports.checkPhonenumberAuth = (errorCallback) => {
-  console.log("==> Running client middleware 'checkPhonenumberAuth'")
   //validate code auth type
   return (req, res, next) => {
     const authTypes = req.client.authTypes;
@@ -232,7 +223,6 @@ exports.checkPhonenumberAuth = (errorCallback) => {
       }
 
     } else {
-      console.log(`Mw client 'checkPhonenumberAuth', phone number zit niet bij de auth types, dus next gaat aangeroepen worden. Authtypes zijn: ${authTypes}`)
       next();
     }
   }
@@ -242,21 +232,15 @@ exports.checkPhonenumberAuth = (errorCallback) => {
  * Check if 2FA is required and for what roles
  */
 exports.check2FA = (req, res, next) => {
-  console.log("==> Running client middleware 'check2FA'")
   const twoFactorRoles =  req.client.twoFactorRoles;
-
-  console.log("==> twoFactorToles: ", twoFactorRoles)
 
   // if no role is present, assume default role
   const userRole = req.user.role ? req.user.role : defaultRole;
-
-  console.log("==> userRole: ", userRole)
 
   /**
    * In case no 2factor roles are defined all is good and check is passed
    */
   if (!twoFactorRoles) {
-    console.log(`Mw client 'check2FA', geen twoFactorRoles gevonden, dus alles is ok, gaat next() aanroepen.`)
     return next();
   }
 
@@ -266,16 +250,13 @@ exports.check2FA = (req, res, next) => {
    * So opposite of most security practices 2FA is trickle up instead of trickle down
    */
   if (twoFactorRoles && !twoFactorRoles.includes(userRole)) {
-    console.log(`Mw client 'check2FA', er zijn twoFactorRoles gevonden, namelijk ${twoFactorRoles}, maar de user heeft een andere rol dus hoeft geen 2FA te doen, namelijk ${userRole}. Roept next() aan.`)
     return next();
   }
 
   // check two factor is validated otherwise send to 2factor screen
   if (twoFactorRoles && twoFactorRoles.includes(userRole) && req.session.twoFactorValid) {
-    console.log(`Mw client 'check2FA', de user moet 2FA gebruiken, maar deze is al valid. Dus alles goed, next() wordt aangeroepen.`)
     return next();
   } else if (twoFactorRoles && twoFactorRoles.includes(userRole) && !req.session.twoFactorValid) {
-    console.log(`Mw client 'check2FA', de user moet 2FA gebruiken, en dit is nog niet gedaan. De gebruiker gaat dus geredirect worden naar: /auth/two-factor?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`)
     return res.redirect(`${process.env.APP_URL}/auth/two-factor?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
   }
 
@@ -292,26 +273,20 @@ exports.check2FA = (req, res, next) => {
  * Check if required fields is set
  */
 exports.checkRequiredUserFields = (req, res, next) => {
-  console.log("==> Running client middleware 'checkRequiredUserFields'")
   const requiredFields = req.client.requiredUserFields;
   const user = req.user;
   let error;
-  console.log(`Mw client 'checkRequiredUserFields', requiredFields: ${requiredFields}`)
   if (requiredFields) {
     requiredFields.forEach((field) => {
-      console.log(`Mw client 'checkRequiredUserFields', check user voor requiredField: ${field}`)
       // if at least one required field is empty, set to error
       error = error || !req.user[field];
-      console.log(`Mw client 'checkRequiredUserFields', vond bij checken voor requiredField een error?: ${error}`)
     });
   }
 
   // if error redirect to register
   if (error) {
-    console.log(`Mw client 'checkRequiredUserFields', error gevonden dus redirect naar: /auth/required-fields?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`)
     res.redirect(`${process.env.APP_URL}/auth/required-fields?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
   } else {
-    console.log(`Mw client 'checkRequiredUserFields', geen requiredField errors gevonden, roept next() aan`)
     next();
   }
 }
@@ -323,18 +298,14 @@ exports.create =  (req, res, next) => {
   const clientSecret = rack();
 
   const values = { name, description, exposedUserFields, requiredUserFields, siteUrl, redirectUrl, authTypes, clientId, clientSecret, allowedDomains, config, twoFactorRoles};
-  console.log("==> Auth server gaat proberen een nieuwe client aan te maken in de database, met de volgende values: ", values)
+
   db.Client
     .create(values)
     .then((client) => {
-      console.log("==> Gelukt! Nieuwe client is aangemaakt")
       req.client = client;
       next();
     })
-    .catch((err) => {
-      console.log("==> Helaas! Niet gelukt, vanwege de volgende error: ", err)
-      next(err);
-    });
+    .catch((err) => { next(err); });
 }
 
 exports.update = (req, res, next) => {

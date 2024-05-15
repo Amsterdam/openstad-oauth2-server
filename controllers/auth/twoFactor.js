@@ -60,9 +60,7 @@ exports.post = async (req, res, next) => {
         }
 
         const redirectUrl = req.query.redirect_uri ? encodeURIComponent(req.query.redirect_uri) : req.client.redirectUrl;
-        let authorizeUrl = `/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
-        // Set complete URL including domain for Amsterdam Azure implementation - 31415
-        authorizeUrl = process.env.APP_URL + authorizeUrl
+        const authorizeUrl = `${process.env.APP_URL}/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
 
         res.redirect(authorizeUrl);
     } else {

@@ -31,7 +31,7 @@ exports.create = (req, res, next) => {
     .create({ name })
     .then((response) => {
       req.flash('success', { msg: 'Succesfully created '});
-      res.redirect(`${process.env.APP_URL}/admin/roles` || process.env.APP_URL);
+      res.redirect(`${process.env.APP_URL}/admin/roles`);
     })
     .catch((err) => { next(err); });
 }

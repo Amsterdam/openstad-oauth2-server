@@ -17,15 +17,9 @@ exports.validateLogin = async(req, res, next) => {
 }
 
 exports.check = (req, res, next) => {
-  console.log("==> Running auth middleware 'check'")
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     console.log("==> Mxw auth 'check': request is niet authenticated")
-    let url = '/login?clientId=' + req.client.clientId;
-
-    // Set complete URL including domain for Amsterdam Azure implementation - 31415
-    url = process.env.APP_URL + '/' + url
-
-    console.log(`==> Dus de nieuwe URL met domein is dan: ${url}`)
+    let url = process.env.APP_URL + '/login?clientId=' + req.client.clientId;
 
     if (req.query.redirect_uri) {
       url =  url + '&redirect_uri=' + encodeURIComponent(req.query.redirect_uri);
@@ -33,21 +27,16 @@ exports.check = (req, res, next) => {
 
     if (req.session) {
       req.session.returnTo = req.originalUrl || req.url;
-      console.log("==> Mw auth 'check', req.session: ", req.session)
     }
-    console.log("==> Mw auth 'check' gaat redirecten naar: ", url)
     return res.redirect(url);
   } else {
-    console.log("==> Mw auth 'check' is authenticated, gaat user zoeken in db")
     db.User
       .findOne({ where: { id: req.user.id } })
       .then((user) => {
         req.user = user;
-        console.log("==> My auth 'check' heeft een user gevonden: ", req.user)
         next();
       })
       .catch((err) => {
-        console.log("==> My auth 'check' heeft geen user gevonden: ", err)
         next(err);
       });
   }

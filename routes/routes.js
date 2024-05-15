@@ -278,7 +278,6 @@ module.exports = function (app) {
       clientMw.check2FA,
       clientMw.checkPhonenumberAuth(),
       clientMw.checkUniqueCodeAuth((req, res) => {
-        console.log(`==> checkUniqueCodeAuth, gaat nu geredirect worden naar: /login?clientId=${req.query.client_id}`)  
         return res.redirect(process.env.APP_URL + '/login?clientId=' + req.query.client_id);
       }),
       oauth2Controller.authorization

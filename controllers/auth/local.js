@@ -104,10 +104,7 @@ exports.postLogin = (req, res, next) => {
     req.logIn(user, function(err) {
       if (err) { return next(err); }
       const redirectUrl = req.query.redirect_uri ? encodeURIComponent(req.query.redirect_uri) : req.client.redirectUrl;
-      let authorizeUrl = `/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
-
-      // Set complete URL including domain for Amsterdam Azure implementation - 31415
-			authorizeUrl = process.env.APP_URL + authorizeUrl
+      const authorizeUrl = `${process.env.APP_URL}/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
 
   //    const redirectTo = req.session.returnTo ? req.session.returnTo : req.client.redirectUrl;
 
@@ -127,22 +124,14 @@ exports.postLogin = (req, res, next) => {
 exports.logout = async (req, res) => {
  // req.logout();
 
-  console.log("controler/auth/local bereikt, de tweede middleware")
-
   await req.session.destroy();
 
   const config = req.client.config;
   const allowedDomains = req.client.allowedDomains ? req.client.allowedDomains : false;
   let redirectURL = req.query.redirectUrl;
   try {
-    console.log("redirectURL = ", redirectURL)
     const redirectUrlHost = redirectURL ? new URL(redirectURL).hostname : false;
-    console.log("redirectUrlHost = ", redirectUrlHost)
-    console.log('==> redirectUrlHost:', redirectUrlHost)
-    console.log('==> allowedDomains:', allowedDomains)
-    console.log('==> allowedDomains.indexOf(redirectUrlHost):', allowedDomains.indexOf(redirectUrlHost))
     redirectURL = redirectUrlHost && allowedDomains && allowedDomains.indexOf(redirectUrlHost) !== -1 ? redirectURL : false;
-    console.log("redirectURL nieuw = ", redirectURL)
   } catch (e) {
     redirectURL = null;
   }
@@ -150,7 +139,6 @@ exports.logout = async (req, res) => {
   if (!redirectURL) {
     redirectURL =  config && config.logoutUrl ? config.logoutUrl : req.client.siteUrl
   }
-  console.log("ALs er geen redirectUrl was, dan nu wel als het goed is:", redirectURL)
 
   res.redirect(redirectURL);
 };

@@ -198,9 +198,7 @@ exports.postAuthenticate = (req, res, next) => {
                     const redirectToAuthorisation = () => {
                         // Redirect if it succeeds to authorize screen
                         //check if allowed url will be done by authorize screen
-                        let authorizeUrl = `/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
-                        // Set complete URL including domain for Amsterdam Azure implementation - 31415
-					    authorizeUrl = process.env.APP_URL + authorizeUrl
+                        const authorizeUrl = `${process.env.APP_URL}/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
                         return res.redirect(authorizeUrl);
                     }
 

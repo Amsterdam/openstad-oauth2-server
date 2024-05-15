@@ -144,7 +144,7 @@ exports.create = (req, res, next) => {
     .create({ code, clientId })
     .then((response) => {
       req.flash('success', { msg: 'Succesfully created '});
-      res.redirect(`${process.env.APP_URL}/admin/codes` || process.env.APP_URL);
+      res.redirect(`${process.env.APP_URL}/admin/codes`);
     })
     .catch((err) => { next(err); });
 }
