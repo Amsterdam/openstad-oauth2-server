@@ -135,7 +135,7 @@ module.exports = (db, sequelize, Sequelize) => {
 
     twoFactorRoles: {
       type: DataTypes.JSON,
-      defaultValue: {},
+      defaultValue: [],
       get: function () {
         let value = this.getDataValue('twoFactorRoles');
         try {

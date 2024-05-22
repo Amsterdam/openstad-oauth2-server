@@ -30,7 +30,7 @@ const configAuthTypes = require('../../config/auth.js').types;
      if (req.query.redirect_uri) {
        url =  url + '&redirect_uri=' + encodeURIComponent(req.query.redirect_uri);
      }
-
+      
      res.redirect(url);
    } else {
      res.render('auth/choose', {
@@ -38,7 +38,8 @@ const configAuthTypes = require('../../config/auth.js').types;
         isPriviligedRoute: isPriviligedRoute,
         clientId: req.client.clientId,
         client: req.client,
-        redirect_uri: encodeURIComponent(req.query.redirect_uri)
+        redirect_uri: encodeURIComponent(req.query.redirect_uri),
+        appUrl: process.env.APP_URL
      })
    }
  };

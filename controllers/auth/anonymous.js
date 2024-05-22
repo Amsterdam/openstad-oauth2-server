@@ -20,7 +20,7 @@ exports.login  = (req, res, next) => {
 
 	// catch users that have cookies turned off
 	req.session.createAnonymousUser = true;
-	res.redirect('/auth/anonymous/register?' + queryString)
+	res.redirect(`${process.env.APP_URL}/auth/anonymous/register?` + queryString)
 
 };
 
@@ -28,13 +28,13 @@ exports.register  = (req, res, next) => {
 
   if (req.client && req.client.config.users && req.client.config.users && req.client.config.users.canCreateNewUsers === false) {
 		req.flash('error', {msg: 'Cannot create new users'});
-		return res.redirect(`/auth/anonymous/info?clientId=${req.client.clientId}&redirect_uri=${req.query.redirect_uri}`);
+		return res.redirect(`${process.env.APP_URL}/auth/anonymous/info?clientId=${req.client.clientId}&redirect_uri=${req.query.redirect_uri}`);
   }
 
   if (!req.session.createAnonymousUser) {
 
 		req.flash('error', {msg: 'Cookies zijn onmisbaar op deze site'});
-		return res.redirect(`/auth/anonymous/info?clientId=${req.client.clientId}&redirect_uri=${req.query.redirect_uri}`);
+		return res.redirect(`${process.env.APP_URL}/auth/anonymous/info?clientId=${req.client.clientId}&redirect_uri=${req.query.redirect_uri}`);
 
 	} else {
 
@@ -46,7 +46,7 @@ exports.register  = (req, res, next) => {
 
 				if (!user) {
 					req.flash('error', {msg: authAnonymousConfig.errorMessage});
-					return res.redirect(`/auth/anonymous/info?clientId=${req.client.clientId}&redirect_uri=${req.query.redirect_uri}`);
+					return res.redirect(`${process.env.APP_URL}/auth/anonymous/info?clientId=${req.client.clientId}&redirect_uri=${req.query.redirect_uri}`);
 				}
 
 				req.user = user;
@@ -65,8 +65,8 @@ exports.register  = (req, res, next) => {
 						ip: ip
 					}
 
-					const authorizeUrl = `/dialog/authorize?redirect_uri=${encodeURIComponent(req.query.redirect_uri)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
-
+					const authorizeUrl = `${process.env.APP_URL}/dialog/authorize?redirect_uri=${encodeURIComponent(req.query.redirect_uri)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+					
 					try {
 						db.ActionLog
 							.create(values)
@@ -91,7 +91,7 @@ exports.register  = (req, res, next) => {
 			.catch((err) => {
 				console.log('===> err', err);
 				req.flash('error', {msg: 'Inloggen is niet gelukt'});
-				return res.redirect(`/auth/anonymous/info?clientId=${req.client.clientId}`);
+				return res.redirect(`${process.env.APP_URL}/auth/anonymous/info?clientId=${req.client.clientId}`);
 			});
 
 	}
@@ -103,5 +103,6 @@ exports.info  = (req, res, next) => {
     loginUrl: authAnonymousConfig.loginUrl,
     clientId: req.client.clientId,
     client: req.client,
+	appUrl: process.env.APP_URL
   });
 }

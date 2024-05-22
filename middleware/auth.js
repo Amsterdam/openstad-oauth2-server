@@ -10,7 +10,7 @@ exports.validateLogin = async(req, res, next) => {
 
   if (result.errors && result.errors.length) {
     req.flash('error', result.errors);
-    res.redirect(req.header('Referer') || '/account');
+    res.redirect(req.header('Referer') || `${process.env.APP_URL}/account`);
   } else {
     next();
   }
@@ -18,8 +18,8 @@ exports.validateLogin = async(req, res, next) => {
 
 exports.check = (req, res, next) => {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
-
-    let url = '/login?clientId=' + req.client.clientId;
+    console.log("==> Mxw auth 'check': request is niet authenticated")
+    let url = process.env.APP_URL + '/login?clientId=' + req.client.clientId;
 
     if (req.query.redirect_uri) {
       url =  url + '&redirect_uri=' + encodeURIComponent(req.query.redirect_uri);
@@ -28,7 +28,6 @@ exports.check = (req, res, next) => {
     if (req.session) {
       req.session.returnTo = req.originalUrl || req.url;
     }
-
     return res.redirect(url);
   } else {
     db.User
@@ -48,6 +47,6 @@ exports.passwordValidate = (req, res, next) => {
     next();
   } else {
     req.flash('error', {msg: 'Wachtwoord moet min 8 karakters lang zijn'});
-    res.redirect(req.header('Referer') || '/account');
+    res.redirect(req.header('Referer') || `${process.env.APP_URL}/account`);
   }
 }

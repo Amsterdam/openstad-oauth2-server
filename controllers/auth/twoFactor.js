@@ -1,6 +1,6 @@
 const twofactor = require("node-2fa");
 
-const twoFactorBaseUrl = '/auth/two-factor';
+const twoFactorBaseUrl = `${process.env.APP_URL}/auth/two-factor`;
 
 function isEncoded(uri) {
     uri = uri || '';
@@ -34,7 +34,8 @@ exports.index = (req, res, next) => {
         description: configTwoFactor.description,
         title: configTwoFactor.title,
         buttonText: configTwoFactor.buttonText,
-        redirectUrl: encodeURIComponent(req.query.redirect_uri)
+        redirectUrl: encodeURIComponent(req.query.redirect_uri),
+        appUrl: process.env.APP_URL
     });
 }
 
@@ -59,13 +60,13 @@ exports.post = async (req, res, next) => {
         }
 
         const redirectUrl = req.query.redirect_uri ? encodeURIComponent(req.query.redirect_uri) : req.client.redirectUrl;
-        const authorizeUrl = `/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+        const authorizeUrl = `${process.env.APP_URL}/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
 
         res.redirect(authorizeUrl);
     } else {
         console.log('Two factor validation failed');
         req.flash('error', {msg: 'Two factor validatie is niet gelukt, probeer het nogmaals.'});
-        res.redirect(req.header('Referer') || formatRedirectUrl(`/login`, req));
+        res.redirect(req.header('Referer') || formatRedirectUrl(`${process.env.APP_URL}/login`, req));
     }
 }
 
@@ -119,7 +120,8 @@ exports.configure = async (req, res, next) => {
             description: configTwoFactor.description,
             title: configTwoFactor.title,
             buttonText: configTwoFactor.buttonText,
-            redirectUrl: encodeURIComponent(req.query.redirect_uri)
+            redirectUrl: encodeURIComponent(req.query.redirect_uri),
+            appUrl: process.env.APP_URL
         });
     }
  }

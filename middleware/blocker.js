@@ -24,6 +24,6 @@ exports.preventCiscoRequest = (req, res, next) => {
   console.log('IP is in CIDRs to block', req.ip, blockCidrs, isIpInCidr);
   
   req.flash('error', {msg: 'De url is geen geldige login url, wellicht is deze verlopen'});
-  return res.redirect(`/auth/url/login?clientId=${req.query.clientId}`);
+  return res.redirect(`${process.env.APP_URL}/auth/url/login?clientId=${req.query.clientId}`);
   
 }

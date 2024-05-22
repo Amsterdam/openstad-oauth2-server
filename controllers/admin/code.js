@@ -5,19 +5,22 @@ const csv           = require('fast-csv');
 
 exports.all = (req, res, next) => {
   res.render('admin/code/all', {
-    codes: req.codes
+    codes: req.codes,
+    appUrl: process.env.APP_URL
   });
 }
 
 exports.new = (req, res, next) => {
   res.render('admin/code/new', {
-    clients: req.clients
+    clients: req.clients,
+    appUrl: process.env.APP_URL
   });
 }
 
 exports.bulk = (req, res, next) => {
   res.render('admin/code/bulk', {
-    clients: req.clients
+    clients: req.clients,
+    appUrl: process.env.APP_URL
   });
 }
 
@@ -111,7 +114,7 @@ exports.postBulk = (req, res, next) => {
        req.flash('success', {msg: `All codes succesfully created!` });
      }
 
-     res.redirect(req.header('Referer') || '/admin/code/bulk');
+     res.redirect(req.header('Referer') || `${process.env.APP_URL}/admin/code/bulk`);
    }
 
    /**
@@ -141,7 +144,7 @@ exports.create = (req, res, next) => {
     .create({ code, clientId })
     .then((response) => {
       req.flash('success', { msg: 'Succesfully created '});
-      res.redirect('/admin/codes' || '/');
+      res.redirect(`${process.env.APP_URL}/admin/codes`);
     })
     .catch((err) => { next(err); });
 }
@@ -149,5 +152,5 @@ exports.create = (req, res, next) => {
 exports.destroy = (req, res) => {
   req.body.code.destroy();
   req.flash('success', { msg: 'Succesfully removed'});
-  res.redirect('/admin/codes');
+  res.redirect(process.env.APP_URL + '/admin/codes');
 }

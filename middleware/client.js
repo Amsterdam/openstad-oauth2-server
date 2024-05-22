@@ -19,11 +19,10 @@ exports.withAll = (req, res, next) => {
 exports.withOne = async (req, res, next) => {
 
   let clientId = getClientIdFromRequest(req);
-
   if (!clientId) { // TODO: why is this not part of getClientIdFromRequest
     clientId = req.query.client_id;
   }
-
+  
   if (!clientId) { // TODO: why is this not part of getClientIdFromRequest
     clientId = req.params.clientId;
   }
@@ -43,15 +42,14 @@ exports.withOne = async (req, res, next) => {
 
     if (client) {
       req.client = client;
-
       const clientConfig = req.client.config;
       const clientConfigStyling = clientConfig.styling ?  clientConfig.styling : {};
-
+      
       res.locals.clientProjectUrl = clientConfig.projectUrl;
       res.locals.clientEmail = clientConfig.contactEmail;
       res.locals.clientDisclaimerUrl = clientConfig.clientDisclaimerUrl;
       res.locals.clientStylesheets = clientConfig.clientStylesheets;
-
+      
       //if logo isset in config overwrite the .env logo
       if (clientConfigStyling && clientConfigStyling.logo) {
         res.locals.logo = clientConfigStyling.logo;
@@ -60,15 +58,15 @@ exports.withOne = async (req, res, next) => {
       if (clientConfigStyling && clientConfigStyling.favicon) {
         res.locals.favicon = clientConfigStyling.favicon;
       }
-
+      
       if (clientConfigStyling && clientConfigStyling.inlineCSS) {
         res.locals.inlineCSS = clientConfigStyling.inlineCSS;
       }
-
+      
       if (clientConfig.displayClientName || (clientConfig.displayClientName === 'undefined' && process.env.DISPLAY_CLIENT_NAME=== 'yes')) {
         res.locals.displayClientName = true;
       }
-
+      
       return next();
 
     } else {
@@ -139,7 +137,7 @@ exports.checkIfEmailRequired =  (req, res, next) => {
       if (emailRequired && !req.user.email) {
         if (emailAuthTypesEnabled) {
           req.emailRequiredForAuth = true;
-          res.redirect(`/login?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
+          res.redirect(`${process.env.APP_URL}/login?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
         } else {
           throw new Error('E-mail is required but no auth type enabled that is able to validate it properly');
         }
@@ -172,7 +170,6 @@ exports.checkUniqueCodeAuth = (errorCallback) => {
         .findOne({ where: { clientId: req.client.id, userId: req.user.id } })
         .then((codeResponse) => {
           const userHasPrivilegedRole = privilegedRoles.indexOf(req.user.role) > -1;
-
           // if uniquecode exists or user has priviliged role
           if (codeResponse || userHasPrivilegedRole) {
             next();
@@ -260,7 +257,7 @@ exports.check2FA = (req, res, next) => {
   if (twoFactorRoles && twoFactorRoles.includes(userRole) && req.session.twoFactorValid) {
     return next();
   } else if (twoFactorRoles && twoFactorRoles.includes(userRole) && !req.session.twoFactorValid) {
-    return res.redirect(`/auth/two-factor?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
+    return res.redirect(`${process.env.APP_URL}/auth/two-factor?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
   }
 
 
@@ -279,7 +276,6 @@ exports.checkRequiredUserFields = (req, res, next) => {
   const requiredFields = req.client.requiredUserFields;
   const user = req.user;
   let error;
-
   if (requiredFields) {
     requiredFields.forEach((field) => {
       // if at least one required field is empty, set to error
@@ -289,7 +285,7 @@ exports.checkRequiredUserFields = (req, res, next) => {
 
   // if error redirect to register
   if (error) {
-    res.redirect(`/auth/required-fields?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
+    res.redirect(`${process.env.APP_URL}/auth/required-fields?clientId=${req.client.clientId}&redirect_uri=${encodeURIComponent(req.query.redirect_uri)}`);
   } else {
     next();
   }

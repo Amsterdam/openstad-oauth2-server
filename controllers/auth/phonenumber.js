@@ -23,9 +23,9 @@ const URL               = require('url').URL;
 
 exports.index = (req, res) => {
   if (req.user) {
-    res.redirect('/account');
+    res.redirect(process.env.APP_URL + '/account');
   } else {
-    res.redirect('/login');
+    res.redirect(process.env.APP_URL + '/login');
   }
 };
 
@@ -50,6 +50,7 @@ exports.login = (req, res) => {
     label: configAuthType.loginLabel || configAuthType.label || authPhonenumberConfig.loginLabel || authPhonenumberConfig.label,
     helpText: configAuthType.loginHelpText || configAuthType.helpText || authPhonenumberConfig.loginHelpText || authPhonenumberConfig.helpText,
     buttonText: configAuthType.loginButtonText || configAuthType.buttonText || authPhonenumberConfig.loginButtonText || authPhonenumberConfig.buttonText,
+    appUrl: process.env.APP_URL
   });
 };
 
@@ -143,6 +144,7 @@ exports.smsCode = (req, res) => {
     label: configAuthType.smsCodeLabel || configAuthType.label || authPhonenumberConfig.smsCodeLabel || authPhonenumberConfig.label,
     helpText: configAuthType.smsCodeHelpText || configAuthType.helpText || authPhonenumberConfig.smsCodeHelpText || authPhonenumberConfig.helpText,
     buttonText: configAuthType.smsCodeButtonText || configAuthType.buttonText || authPhonenumberConfig.smsCodeButtonText || authPhonenumberConfig.buttonText,
+    appUrl: process.env.APP_URL
   });
 };
 
@@ -168,7 +170,7 @@ exports.postSmsCode = (req, res, next) => {
           const redirectToAuthorisation = () => {
             // Redirect if it succeeds to authorize screen
             //check if allowed url will be done by authorize screen
-            const authorizeUrl = `/dialog/authorize?redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+            const authorizeUrl = `${process.env.APP_URL}/dialog/authorize?redirect_uri=${encodeURIComponent(redirectUrl)}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
             return res.redirect(authorizeUrl);
           }
 

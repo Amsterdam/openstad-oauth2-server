@@ -31,7 +31,8 @@ exports.index = (req, res, next) => {
     description: configRequiredFields.description,
     title: configRequiredFields.title,
     buttonText: configRequiredFields.buttonText,
-    redirect_uri: encodeURIComponent(req.query.redirect_uri)
+    redirect_uri: encodeURIComponent(req.query.redirect_uri),
+    appUrl: process.env.APP_URL
   });
 }
 
@@ -51,7 +52,7 @@ exports.post = (req, res, next) => {
   req.user
     .update(data)
     .then(() => {
-      const authorizeUrl = `/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+      const authorizeUrl = `${process.env.APP_URL}/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
       res.redirect(authorizeUrl);
     })
     .catch((err) => {

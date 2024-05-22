@@ -3,17 +3,21 @@ const db = require('../../db');
 
 exports.all = (req, res, next) => {
   res.render('admin/role/all', {
-    roles: req.roles
+    roles: req.roles,
+    appUrl: process.env.APP_URL
   });
 }
 
 exports.new = (req, res, next) => {
-  res.render('admin/role/new');
+  res.render('admin/role/new', {
+    appUrl: process.env.APP_URL
+  });
 }
 
 exports.edit = (req, res, next) => {
   res.render('admin/role/edit', {
-    role: req.role
+    role: req.role,
+    appUrl: process.env.APP_URL
   });
 }
 
@@ -27,7 +31,7 @@ exports.create = (req, res, next) => {
     .create({ name })
     .then((response) => {
       req.flash('success', { msg: 'Succesfully created '});
-      res.redirect('/admin/roles' || '/');
+      res.redirect(`${process.env.APP_URL}/admin/roles`);
     })
     .catch((err) => { next(err); });
 }
@@ -39,7 +43,7 @@ exports.update = (req, res, next) => {
     .update({name})
     .then((response) => {
       req.flash('success', { msg: 'Updated role!'});
-      res.redirect('/admin/role/' + response.get('id')  || '/');
+      res.redirect(`${process.env.APP_URL}/admin/role/` + response.get('id')  || process.env.APP_URL);
     })
     .catch((err) => { next(err); })
 }

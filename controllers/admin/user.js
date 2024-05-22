@@ -21,14 +21,16 @@ exports.edit = (req, res) => {
     user: req.userObject,
     roles: req.roles,
     clients: userClients,
-    userRoles: userRoles
+    userRoles: userRoles,
+    appUrl: process.env.APP_URL
   });
 }
 
 exports.new = (req, res) => {
   res.render('admin/user/new',  {
     roles: req.roles,
-    clients: req.clients
+    clients: req.clients,
+    appUrl: process.env.APP_URL
   });
 }
 
@@ -58,7 +60,7 @@ exports.create = (req, res, next) => {
     })
     .then((response) => {
       req.flash('success', { msg: 'Succesfully created '});
-      res.redirect('/admin/user/' + response.id );
+      res.redirect(`${process.env.APP_URL}/admin/user/` + response.id );
     })
     .catch((err) => {
       next(err);
@@ -105,11 +107,11 @@ exports.update = (req, res, next) => {
   })
   .then(() => {
     req.flash('success', { msg: 'Updated user!' });
-    res.redirect('/admin/user/' + req.userObject.id);
+    res.redirect(`${process.env.APP_URL}/admin/user/` + req.userObject.id);
   })
   .catch((err) => {
     req.flash('error', { msg: 'Error!' });
-    res.redirect('/admin/user/' + req.userObject.id);
+    res.redirect(`${process.env.APP_URL}/admin/user/` + req.userObject.id);
   })
 
 }

@@ -23,9 +23,9 @@
   */
  exports.index = (req, res) => {
    if (req.user) {
-     res.redirect('/account');
+     res.redirect(process.env.APP_URL + '/account');
    } else {
-     res.redirect('/login');
+     res.redirect(process.env.APP_URL + '/login');
    }
  };
 
@@ -51,6 +51,7 @@ exports.login = (req, res) => {
     helpText: configAuthType.helpText ? configAuthType.helpText : authLocalConfig.helpText,
     buttonText: configAuthType.buttonText ? configAuthType.buttonText : authLocalConfig.buttonText,
     forgotPasswordText: configAuthType.forgotPasswordText ? configAuthType.forgotPasswordText : authLocalConfig.forgotPasswordText,
+    appUrl: process.env.APP_URL
   });
 };
 
@@ -62,7 +63,8 @@ exports.login = (req, res) => {
  */
 exports.register = (req, res) => {
   res.render('auth/local/register', {
-    clientId: req.client.clientId
+    clientId: req.client.clientId,
+    appUrl: process.env.APP_URL
   });
 };
 
@@ -80,7 +82,7 @@ exports.postRegister = (req, res, next) => {
       .catch((err) => { next(err) });
   } else {
     req.flash('error', { errors });
-    res.redirect('/register');
+    res.redirect(process.env.APP_URL + '/register');
   }
 }
 
@@ -102,7 +104,7 @@ exports.postLogin = (req, res, next) => {
     req.logIn(user, function(err) {
       if (err) { return next(err); }
       const redirectUrl = req.query.redirect_uri ? encodeURIComponent(req.query.redirect_uri) : req.client.redirectUrl;
-      const authorizeUrl = `/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
+      const authorizeUrl = `${process.env.APP_URL}/dialog/authorize?redirect_uri=${redirectUrl}&response_type=code&client_id=${req.client.clientId}&scope=offline`;
 
   //    const redirectTo = req.session.returnTo ? req.session.returnTo : req.client.redirectUrl;
 
@@ -129,7 +131,7 @@ exports.logout = async (req, res) => {
   let redirectURL = req.query.redirectUrl;
   try {
     const redirectUrlHost = redirectURL ? new URL(redirectURL).hostname : false;
-    redirectURL           = redirectUrlHost && allowedDomains && allowedDomains.indexOf(redirectUrlHost) !== -1 ? redirectURL : false;
+    redirectURL = redirectUrlHost && allowedDomains && allowedDomains.indexOf(redirectUrlHost) !== -1 ? redirectURL : false;
   } catch (e) {
     redirectURL = null;
   }

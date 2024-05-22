@@ -1,7 +1,7 @@
 const hat = require('hat');
 
 const removeProtocol = (url) => {
-  return url ? url.replace('http://', '').replace('https://', '').replace(/\/$/, "") : '';
+  return url ? url.replace(/^(https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(\/.*)?$/, '$2').replace(/\/$/, '') : '';
 }
 
 module.exports = async function seed(db) {

@@ -2,15 +2,15 @@ const memberRoleId  = process.env.MEMBER_ROLE_ID ? process.env.MEMBER_ROLE_ID : 
 const anonymousRoleId = process.env.ANONYMOUS_ROLE_ID ? process.env.ANONYMOUS_ROLE_ID : 3;
 
 const formatLoginUrl = (slug) => {
-  return `/auth/${slug}/login`;
+  return `${process.env.APP_URL}/auth/${slug}/login`;
 }
 
 const formatRegisterUrl = (slug) => {
-  return `/auth/${slug}/register`;
+  return `${process.env.APP_URL}/auth/${slug}/register`;
 }
 
 const formatSMSCodeUrl = (slug) => {
-  return `/auth/${slug}/sms-code`;
+  return `${process.env.APP_URL}/auth/${slug}/sms-code`;
 }
 
 const types = [
