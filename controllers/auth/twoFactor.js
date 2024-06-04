@@ -1,4 +1,5 @@
 const twofactor = require("node-2fa");
+const QRCode = require('qrcode')
 
 const twoFactorBaseUrl = `${process.env.APP_URL}/auth/two-factor`;
 
@@ -109,7 +110,8 @@ exports.configure = async (req, res, next) => {
 
         }
 
-        const qrCode = `https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/=${encodeURIComponent(issuer)}:${encodeURIComponent(accountName)}%3Fsecret=${twoFactorSecret}%26issuer=${encodeURIComponent(issuer)}`;
+        const otpAuthUrl = `otpauth://totp/${encodeURIComponent(issuer)}:%20${encodeURIComponent(accountName)}?secret=${twoFactorSecret}&issuer=${encodeURIComponent(issuer)}`;
+        const qrCode = await QRCode.toDataURL(otpAuthUrl)
 
         res.render('auth/two-factor/configure', {
             postUrl: twoFactorBaseUrl + '/configure',
