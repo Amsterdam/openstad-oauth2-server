@@ -36,7 +36,7 @@ const uniqueCodeBruteForce = bruteForce.user;
 const phonenumberBruteForce = bruteForce.userVeryRestricted;
 const smsCodeBruteForce = bruteForce.user;
 const emailUrlBruteForce = bruteForce.userVeryRestricted;
-const twoFactorBruteForce = bruteForce.userVeryRestricted;
+const twoFactorBruteForce = bruteForce.userVeryRestrictedUsingIp;
 
 const csurf = require('csurf');
 
