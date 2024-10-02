@@ -46,7 +46,7 @@ exports.userVeryRestricted = [
 ];
 
 //CONFIGURE BRUTE FORCE PROTECT
-let userVeryRestrictedLimiterUsingIp = rateLimit({
+let userVeryRestrictedLimiterByUserId = rateLimit({
   keyGenerator: (req, res) => req.bruteKey,
 	windowMs: 15 * 60 * 1000,
 	max: 5,
@@ -55,9 +55,9 @@ let userVeryRestrictedLimiterUsingIp = rateLimit({
   message: 'U heeft te vaak gepoogd in te loggen, probeer het weer over 15 minuten',
   handler: failCallback,
 });
-exports.userVeryRestrictedUsingIp = [ 
+exports.userVeryRestrictedByUserId = [ 
   function (req, res, next) {
-    req.brute = userVeryRestrictedLimiterUsingIp;
+    req.brute = userVeryRestrictedLimiterByUserId;
     req.bruteKey = req.user.id;
     return next();
   },
