@@ -58,7 +58,7 @@ let userVeryRestrictedLimiterUsingIp = rateLimit({
 exports.userVeryRestrictedUsingIp = [ 
   function (req, res, next) {
     req.brute = userVeryRestrictedLimiterUsingIp;
-    req.bruteKey = req.ip;
+    req.bruteKey = req.user.id;
     return next();
   },
   userVeryRestrictedLimiter,
