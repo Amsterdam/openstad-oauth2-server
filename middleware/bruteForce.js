@@ -46,6 +46,25 @@ exports.userVeryRestricted = [
 ];
 
 //CONFIGURE BRUTE FORCE PROTECT
+let userVeryRestrictedLimiterByUserId = rateLimit({
+  keyGenerator: (req, res) => req.bruteKey,
+	windowMs: 15 * 60 * 1000,
+	max: 5,
+	standardHeaders: true,
+	legacyHeaders: false,
+  message: 'U heeft te vaak gepoogd in te loggen, probeer het weer over 15 minuten',
+  handler: failCallback,
+});
+exports.userVeryRestrictedByUserId = [ 
+  function (req, res, next) {
+    req.brute = userVeryRestrictedLimiterByUserId;
+    req.bruteKey = req.user.id;
+    return next();
+  },
+  userVeryRestrictedLimiter,
+];
+
+//CONFIGURE BRUTE FORCE PROTECT
 let globalLimiter = rateLimit({
   keyGenerator: (req, res) => req.bruteKey,
 	windowMs: 15 * 60 * 1000,

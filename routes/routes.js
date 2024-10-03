@@ -36,6 +36,7 @@ const uniqueCodeBruteForce = bruteForce.user;
 const phonenumberBruteForce = bruteForce.userVeryRestricted;
 const smsCodeBruteForce = bruteForce.user;
 const emailUrlBruteForce = bruteForce.userVeryRestricted;
+const twoFactorBruteForce = bruteForce.userVeryRestrictedByUserId;
 
 const csurf = require('csurf');
 
@@ -263,7 +264,7 @@ module.exports = function (app) {
 
     app.use('/auth/two-factor', [authMw.check, clientMw.withOne]);
     app.get('/auth/two-factor', clientMw.withOne, csrfProtection, addCsrfGlobal, clientMw.checkIfEmailRequired, authTwoFactor.index);
-    app.post('/auth/two-factor', clientMw.withOne, csrfProtection, addCsrfGlobal, authTwoFactor.post);
+    app.post('/auth/two-factor', clientMw.withOne, csrfProtection, addCsrfGlobal, twoFactorBruteForce, authTwoFactor.post);
     app.get('/auth/two-factor/configure', clientMw.withOne, csrfProtection, addCsrfGlobal, clientMw.checkIfEmailRequired, authTwoFactor.configure);
     app.post('/auth/two-factor/configure', clientMw.withOne, csrfProtection, addCsrfGlobal, authTwoFactor.configurePost);
 
