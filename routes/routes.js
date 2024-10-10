@@ -298,6 +298,14 @@ module.exports = function (app) {
     // https://developers.google.com/identity/protocols/OAuth2WebServer
     app.get('/api/revoke', tokenController.revoke);
 
+    app.get('/health', (req, res) => {
+      res.status(200).json({
+        status: 'UP',
+        message: 'Server is healthy',
+        timestamp: new Date().toISOString(),
+      });
+    });
+
     require('./adminApi')(app);
 
     // Handle 404
