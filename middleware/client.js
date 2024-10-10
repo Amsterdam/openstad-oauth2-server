@@ -232,7 +232,9 @@ exports.checkPhonenumberAuth = (errorCallback) => {
  * Check if 2FA is required and for what roles
  */
 exports.check2FA = (req, res, next) => {
-  const twoFactorRoles =  req.client.twoFactorRoles;
+  const twoFactorRolesFromSettings =  req.client.twoFactorRoles;
+  const enforcedTwoFactorRoles = ["admin", "moderator", "editor"];
+  const twoFactorRoles = [...new Set([...twoFactorRolesFromSettings, ...enforcedTwoFactorRoles])]
 
   // if no role is present, assume default role
   const userRole = req.user.role ? req.user.role : defaultRole;
