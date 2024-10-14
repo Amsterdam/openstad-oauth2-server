@@ -107,6 +107,15 @@ const sessionConfig = {
 // Session Configuration
 app.use(expressSession(sessionConfig));
 
+// Reduce session duration for certain roles
+const rolesWithShorterSessionDuration = ["admin", "moderator", "editor"]
+app.use((req, res, next) => {
+  if (req.isAuthenticated() && req.user && req.user.role && rolesWithShorterSessionDuration.includes(req.user.role)) {
+    req.session.cookie.maxAge = 1000 * 60 * 1; // One minute for testing purposes
+  }
+  next()
+})
+
 app.use(flash());
 
 app.use(bodyParser.urlencoded({ extended: true }));
