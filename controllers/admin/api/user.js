@@ -1,17 +1,16 @@
 const db = require('../../../db');
 const hat = require('hat');
 
+const removeSensitiveUserDetails = (user) => (({ password, hashedPhoneNumber, twoFactorToken,...redactedUser }) => redactedUser)(user);
+
 const outputUser = (req, res, next) => {
-  let result = { ...req.userObject };
-  delete result.dataValues.password;
-  delete result.dataValues.hashedPhoneNumber;
-  res.json(result.dataValues);
+  res.json(removeSensitiveUserDetails(req.userObject.dataValues));
 };
 
 exports.all = (req, res, next) => {
     res.json({
         total: req.totalCodeCount,
-        data: req.users
+        data: req.users.map((user) => removeSensitiveUserDetails(user.dataValues))
     });
 };
 
