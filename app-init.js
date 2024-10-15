@@ -115,7 +115,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "frame-ancestors 'self' *.amsterdam.nl")
+  res.setHeader("Content-Security-Policy", "frame-ancestors 'self' *")
 })
 
 app.use((req, res, next) => {
