@@ -154,6 +154,9 @@ module.exports = function (app) {
         next();
     });
 
+    app.use((req, res, next) => {
+      res.setHeader("Content-Security-Policy", "frame-ancestors 'self' *")
+    })    
 
     app.get('/', authLocal.index);
 

@@ -115,10 +115,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "frame-ancestors 'self' *")
-})
-
-app.use((req, res, next) => {
   console.log('=====> REQUEST: ', req.originalUrl);
   console.log('=====> query: ', req.query);
   console.log('=====> ip: ', req.headers['x-forwarded-for'] || req.socket.remoteAddress, req.ip);
