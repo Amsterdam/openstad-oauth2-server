@@ -154,6 +154,10 @@ module.exports = function (app) {
         next();
     });
 
+    app.use((req, res, next) => {
+      res.setHeader("Content-Security-Policy", "frame-ancestors 'self' *.amsterdam.nl *.openstad.org")
+      next()
+    })    
 
     app.get('/', authLocal.index);
 
