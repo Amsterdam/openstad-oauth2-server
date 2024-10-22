@@ -155,7 +155,7 @@ module.exports = function (app) {
     });
 
     app.use((req, res, next) => {
-      res.setHeader("Content-Security-Policy", "frame-ancestors 'self' *.amsterdam.nl")
+      res.setHeader("Content-Security-Policy", "frame-ancestors 'self' *.amsterdam.nl *.openstad.org")
       next()
     })    
 
