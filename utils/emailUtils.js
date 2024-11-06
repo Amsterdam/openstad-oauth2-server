@@ -3,7 +3,7 @@ const whitelistedEmails = process.env.WHITELISTED_EMAILS
   : [];
 
 function isWhitelistedEmail(from) {
-  return whitelistedEmails.length > 0 && whitelistedEmails.some(whitelistedEmail => from.includes(whitelistedEmail));
+  return whitelistedEmails.some(whitelistedEmail => from.includes(whitelistedEmail));
 }
 
 module.exports = {
