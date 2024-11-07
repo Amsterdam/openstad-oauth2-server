@@ -7,6 +7,7 @@ const currencyFilter    = require('../nunjucks/currency');
 const limitTo           = require('../nunjucks/limitTo');
 const jsonFilter        = require('../nunjucks/json');
 const timestampFilter   = require('../nunjucks/timestamp');
+const { isWhitelistedEmail } = require('../utils/emailUtils');
 
 
 const formatTransporter = function ({ host, port, secure, auth }) {
@@ -72,6 +73,13 @@ exports.send = function ({subject, toName, toEmail, templateString, template, va
    */
   fromEmail = fromEmail ? fromEmail : process.env.FROM_EMAIL;
   fromName = fromName ? fromName : process.env.FROM_NAME;
+
+  /**
+   * If from e-mail is not a whitelisted email, replace it with a default email
+   */
+  if (!isWhitelistedEmail(fromEmail)) {
+    fromEmail = 'no-reply@amsterdam.nl';
+  }
 
   /**
    * Format Message object
