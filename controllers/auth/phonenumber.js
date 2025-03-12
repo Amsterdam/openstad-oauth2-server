@@ -174,12 +174,10 @@ exports.postSmsCode = (req, res, next) => {
             return res.redirect(authorizeUrl);
           }
 
-          req.brute.reset(() => {
-            //log the succesfull login
-            authService.logSuccessFullLogin(req)
-              .then (() => { redirectToAuthorisation(); })
-              .catch (() => { redirectToAuthorisation(); });
-          });
+          //log the succesfull login
+          authService.logSuccessFullLogin(req)
+            .then (() => { redirectToAuthorisation(); })
+            .catch (() => { redirectToAuthorisation(); });
         })
         .catch((err) => {
           next(err);
